@@ -1,0 +1,40 @@
+dirt:
+  x: 1
+  y: 1
+
+grass_block_top:
+  x: 0
+  y: 0
+
+grass_block_side:
+  x: 1
+  y: 0
+
+sand:
+  x: 0
+  y: 1
+
+stone:
+  x: 2
+  y: 0
+
+deepslate:
+  x: 0
+  y: 2
+
+diamond_ore:
+  x: 2
+  y: 1
+
+
+oak_log_top:
+  x: 1
+  y: 2
+
+oak_log_side:
+  x: 2
+  y: 2
+
+oak_plank:
+  x: 0
+  y: 3
