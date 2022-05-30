@@ -15,10 +15,6 @@ static float lerp(float a, float b, float f) {
     return a + f * (b - a);
 }
 
-namespace Draw {
-
-}
-
 static void drawAABB(AABB in_aabb, Camera& cam, glm::vec3 color){
     const char* vertexShaderSrc = "#version 330 core\n"
                                   "layout (location = 0) in vec3 aPos;"
@@ -198,13 +194,24 @@ void Player::Update(float dt, std::vector<Chunk>& chunks) {
     mouseDebounce -= dt;
     float resetMouseDebounce = 0.15f;
 
+    if (playerPos.position.y < -20.0f) {
+        playerPos.position.y = -20.0f;
+        if (rigidBody.velocity.y < 0.0f) {
+            rigidBody.velocity.y = 0.0f;
+        }
+    }
+
+    if (playerPos.position.y <= 0.0f) {
+        return;
+    }
     RaycastResult raycastResult = Physics::ShootRay(camera.Position, camera.Orientation, chunks);
 
+    hitData = NO_HIT;
     if (raycastResult.hit){
         if (Chunk::getBlockByPos(chunks, raycastResult.blockPosition).isSolid) {
-            drawAABB({raycastResult.blockPosition, raycastResult.blockPosition + glm::ivec3(1.0f)}, camera, glm::vec3(0.9f, 0.9f, 0.9f));
+            drawAABB({raycastResult.blockPosition, raycastResult.blockPosition + glm::ivec3(1.0f)}, camera, glm::vec3(0.05f));
         }
-        uint8_t replaceWith;
+        uint8_t replaceWith = 0;
         if (Input::isMouseButtonDown(GLFW_MOUSE_BUTTON_1) && mouseDebounce < 0.0f){
             replaceWith = 0;
             mouseDebounce = resetMouseDebounce;
@@ -222,22 +229,16 @@ void Player::Update(float dt, std::vector<Chunk>& chunks) {
             return;
         }
         if (replaceWith != 0){
-            Chunk& chunk = Chunk::getChunkByPos(chunks, raycastResult.lastBlockPosition);
 
             AABB blockAABB = AABB{raycastResult.lastBlockPosition, raycastResult.lastBlockPosition + glm::ivec3(1.0f)};
             AABB playerAABB = entityCoordinator.GetComponent<AABB>(playerEntity);
             if (Physics::AABBIntersectsAABB(blockAABB, playerAABB)){
                 return;
             }
-
-            glm::ivec3 localPos = Chunk::localizePos(raycastResult.lastBlockPosition, chunk.chunkPos);
-            chunk.setBlockAndUpdate(localPos.x, localPos.y, localPos.z, replaceWith);
+            hitData = HitData{replaceWith, raycastResult.lastBlockPosition};
         }
         else {
-            Chunk& chunk = Chunk::getChunkByPos(chunks, raycastResult.blockPosition);
-
-            glm::ivec3 localPos = Chunk::localizePos(raycastResult.blockPosition, chunk.chunkPos);
-            chunk.setBlockAndUpdate(localPos.x, localPos.y, localPos.z, replaceWith);
+            hitData = HitData{replaceWith, raycastResult.blockPosition};
         }
     }
 }

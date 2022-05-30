@@ -22,7 +22,7 @@ set(
         src/World/Chunk.cpp
         src/World/World.cpp
         src/App/App.cpp
-        src/Graphics/TextureParser.cpp
+        src/Graphics/BlockParser.cpp
         src/Gameplay/Player.cpp
         src/Gameplay/Physics.cpp
 )
@@ -39,7 +39,7 @@ set(
         src/World/Chunk.h
         src/World/World.h
         src/App/App.h
-        src/Graphics/TextureParser.h
+        src/Graphics/BlockParser.h
         src/Gameplay/ECS.h
         src/Gameplay/Player.h
         src/Gameplay/Physics.h

@@ -7,22 +7,27 @@
 #include "Gameplay/Physics.h"
 #include "Window/Input.h"
 
+struct HitData {
+    uint8_t id;
+    glm::ivec3 hitBlock;
+};
+
+const HitData NO_HIT = {0, glm::ivec3(-1)};
 
 class Player {
 public:
     explicit Player(glm::vec3 spawnPosition);
-    Entity playerEntity{};
     Camera camera;
     void Update(float dt, std::vector<Chunk>& chunks);
     void Load();
     void UpdateCollider() const;
-    glm::ivec2 chunkPos{};
-    glm::ivec2 prevChunkPos{};
-    glm::vec3 size{};
-    glm::ivec3 hittenBlock{};
-//    void HitBlocks(std::vector<Chunk>& chunks, glm::ivec3 curBlock, glm::ivec3 nextBlock);
     void SetEquippedBlock(uint8_t blockID);
+    HitData hitData{};
+    glm::ivec2 prevChunkPos{};
+    glm::ivec2 chunkPos{};
 private:
+    Entity playerEntity{};
+    glm::vec3 size{};
     float flyDebounce = 0.0f;
     float mouseDebounce = 0.0f;
     uint8_t equippedBlock = 1;

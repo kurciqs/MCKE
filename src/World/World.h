@@ -1,9 +1,8 @@
 #ifndef MINECRAFT_WORLD_H
 #define MINECRAFT_WORLD_H
-//#include "Graphics/Texture.h"
 #include "World/Chunk.h"
 #include "Graphics/Camera.h"
-#include "Graphics/TextureParser.h"
+#include "Graphics/BlockParser.h"
 #include "Gameplay/Player.h"
 #include "glm/gtx/hash.hpp"
 #include <thread>
@@ -16,7 +15,7 @@
 class World{
 public:
     glm::vec3 worldSpawn = glm::vec3(0.0f, 100.0f, 0.0f);
-    World(Window *WIN, uint64_t seed, TextureParser textureParser, std::string savePath);
+    World(Window *WIN, uint64_t seed, BlockParser textureParser, std::string savePath);
     void Load();
     void Update(float dt);
     void Render();
@@ -30,9 +29,11 @@ public:
     std::string savePath;
     uint64_t seed;
 private:
+    std::queue <LightNode> lightBfsQueue;
+    std::queue <LightRemovalNode> lightRemovalBfsQueue;
     Player player;
     std::shared_ptr<Physics> physicsSystem;
-    TextureParser w_TextureParser;
+    BlockParser w_BlockParser;
     std::unordered_set<glm::ivec2> loadedChunkPositions;
     uint32_t texture{};
     Shader shader;

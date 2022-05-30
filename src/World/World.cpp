@@ -34,12 +34,12 @@ static void workOnChunks(const std::vector<Chunk*>& chunksToWorkOn, World* world
     }
 }
 
-World::World(Window *WIN, uint64_t seed, TextureParser textureParser, std::string savePath)
+World::World(Window *WIN, uint64_t seed, BlockParser textureParser, std::string savePath)
 : shader(Shader("../res/shaders/default.vert", "../res/shaders/default.frag")),
   window(WIN),
   seed(seed),
   skyColor({119.0f / 255.0f, 136.0f / 255.0f, 153.0f / 255.0f, 1.0f}),
-  w_TextureParser(std::move(textureParser)),
+  w_BlockParser(std::move(textureParser)),
   savePath(std::move(savePath)),
   player(Player(worldSpawn))
   {}
@@ -92,7 +92,7 @@ void World::Load() {
     entityCoordinator.SetSystemSignature<Physics>(signature);
 
     player.Load(); /// WARNING: call after all Coordinator loading, otherwise Segfault!!!!!
-    player.SetEquippedBlock(w_TextureParser.getIdByName("oak_plank"));
+    player.SetEquippedBlock(w_BlockParser.getIdByName("oak_plank"));
     //initial update
 }
 
@@ -114,31 +114,41 @@ void World::Delete() {
     }
     shader.Delete();
 }
+
 void World::Update(float dt) {
     // update physics and player
     physicsSystem->Update(chunks, dt);
     player.Update(dt, chunks);
+    if (player.hitData.hitBlock != NO_HIT.hitBlock) {
+        Chunk& chunk = Chunk::getChunkByPos(chunks, player.hitData.hitBlock);
+        glm::ivec3 localPos = Chunk::localizePos(player.hitData.hitBlock, chunk.chunkPos);
+        chunk.setTorchlight(localPos.x, localPos.y, localPos.z, 15);
+        chunk.setBlockAndUpdate(localPos.x, localPos.y, localPos.z, player.hitData.id);
+    }
 
-    time = (sin(0.1f * glfwGetTime()) + 1.2f)/2.0f;
-//    time = 1.0f;
+//    time = (sin(0.1f * glfwGetTime()) + 1.2f)/2.0f;
+    time = 1.0f;
 
     //shader uniforms
     shader.Activate();
     player.camera.Upload(shader, "u_cam");
     shader.uploadFloat("u_time", time);
+    shader.uploadFloat("u_skyLight", time);
     shader.uploadVec2("u_resolution", glm::vec2(window->width, window->height));
     shader.uploadVec4("u_bg", skyColor * time);
     shader.Deactivate();
 }
 
+
 void World::GenerateChunks(uint8_t renderDistance) {
+
     int amountOfThreads = getNumberOfThreads(maxAmountOfThreads);
     std::vector<std::thread> threads(amountOfThreads - 1);
     std::vector<Chunk*> workerTasks[amountOfThreads - 1];
 
     for (int i = -renderDistance; i <= renderDistance; i++) {
         for (int j = -renderDistance; j <= renderDistance; j++) {
-            auto _chunk = Chunk(seed, i, j, w_TextureParser);
+            auto _chunk = Chunk(seed, i, j, w_BlockParser);
             chunks.emplace_back(_chunk);
             loadedChunkPositions.emplace(_chunk.chunkPos);
         }

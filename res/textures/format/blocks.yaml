@@ -3,45 +3,77 @@
   bottom: dirt
   top: grass_block_top
   side: grass_block_side
+  isLightSource: false
+  isOpaque: true
+  isTransparent: false
+  isSolid: true
 
 - name: dirt
   id: 2
   bottom: dirt
   top: dirt
   side: dirt
+  isLightSource: false
+  isOpaque: false
+  isTransparent: false
+  isSolid: true
 
 - name: sand
   id: 3
   bottom: sand
   top: sand
   side: sand
+  isLightSource: false
+  isOpaque: true
+  isTransparent: false
+  isSolid: true
 
 - name: stone
   id: 4
   bottom: stone
   top: stone
   side: stone
+  isLightSource: false
+  isOpaque: true
+  isTransparent: false
+  isSolid: true
 
 - name: deepslate
   id: 5
   bottom: deepslate
   top: deepslate
   side: deepslate
+  isLightSource: false
+  isOpaque: true
+  isTransparent: false
+  isSolid: true
 
 - name: diamond_ore
   id: 6
   bottom: diamond_ore
   top: diamond_ore
   side: diamond_ore
+  isLightSource: false
+  isOpaque: true
+  isTransparent: false
+  isSolid: true
 
 - name: oak_log
   id: 7
   bottom: oak_log_top
   top: oak_log_top
   side: oak_log_side
+  isLightSource: false
+  isOpaque: true
+  isTransparent: false
+  isSolid: true
 
 - name: oak_plank
   id: 8
   bottom: oak_plank
   top: oak_plank
   side: oak_plank
+  isLightSource: true
+  isOpaque: true
+  isTransparent: false
+  isSolid: true

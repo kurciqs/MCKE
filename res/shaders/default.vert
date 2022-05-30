@@ -2,12 +2,12 @@
 layout (location = 0) in int xz;
 layout (location = 1) in uint y;
 layout (location = 2) in int texPos;
-layout (location = 3) in uint aFace;
+layout (location = 3) in int aData;
 
-out vec2 fragCoord;
 out vec2 UV;
 out vec3 Normal;
 out vec3 FragPos;
+flat out int light;
 
 uniform mat4 u_trans;
 uniform mat4 u_cam;
@@ -58,7 +58,12 @@ vec3 get_normal(uint face){
 }
 
 void main(){
-    Normal = get_normal(aFace);
+    int face = ((aData >> 5) & 7); // 7 = 0b00000111
+    Normal = get_normal(face);
+
+    int lightLvl = ((aData >> 1) & 15); // 15 = 0b00001111
+    light = lightLvl;
+
     UV = vec2(map(extractX(texPos), 0., maxTextureAtlasPos, 0., 1.), map(extractZ(texPos), 0., maxTextureAtlasPos, 0., 1.));
 
     int x = extractX(xz);

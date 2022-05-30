@@ -4,12 +4,20 @@ out vec4 FragColor;
 uniform vec2 u_resolution;
 uniform float u_time;
 uniform vec4 u_bg;
+uniform float u_skyLight;
+
+uint baseLightLevel = 3;
 
 in vec2 UV;
 in vec3 Normal;
 in vec3 FragPos;
+flat in int light;
 
 uniform sampler2D Texture;
+
+float map(float X, float A, float B, float C, float D){
+    return (X-A)/(B-A) * (D-C) + C;
+}
 
 vec4 basicLight(){
     vec4 lightColor = vec4(1.0, 1.0, 1.0, 1.0);
@@ -23,8 +31,8 @@ vec4 basicLight(){
     float inten = 0.0 / (a * dist * dist + b * dist + 1.0);
 
     // ambient lighting
-    float ambient = u_time;
-//    float ambient = 0.2;
+//    float ambient = u_time;
+    float ambient = 1.0;
 
     // diffuse lighting
     vec3 normal = normalize(Normal);
@@ -47,8 +55,8 @@ float logisticDepth(float depth, float steepness, float offset){
 }
 
 void main(){
-    vec4 color = texture(Texture, UV) * basicLight();
-    float depth = logisticDepth(gl_FragCoord.z, 5.15, 4.5);
+    vec4 color = texture(Texture, UV) * map(light / 3. + baseLightLevel + u_skyLight * 15., 0., 15., 0.0, 0.9);
+    float depth = logisticDepth(gl_FragCoord.z, 9.15, 4.75);
 //    float depth = 0.0f;
-    FragColor = color * (1.0 - depth) + depth * u_bg;
+    FragColor = (color * (1.0 - depth) + depth * u_bg);
 }

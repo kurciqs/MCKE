@@ -46,7 +46,7 @@ namespace App{
         Input::BindWindow(window);
 
         glfwSwapInterval(1);
-        TextureParser textureParser("../res/textures/format/TexUVs.yaml", "../res/textures/format/blocks.yaml");
+        BlockParser textureParser("../res/textures/format/TexUVs.yaml", "../res/textures/format/blocks.yaml");
 
         world = new World(window, 42069, textureParser, "../world");
         return 0;

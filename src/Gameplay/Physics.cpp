@@ -91,7 +91,6 @@ std::vector<IntType> range(IntType start, IntType stop, IntType step)
     return result;
 }
 
-// the most annoying function in the whole project (GitHub copilot)
 void Physics::resolveCollision(glm::vec3 playerSize, Entity playerEntity, std::vector<Chunk>& chunks, float dt) {
     //by https://www.youtube.com/watch?v=fWkbIOna6RA best shit ever
     auto &playerTransform = entityCoordinator.GetComponent<Transform>(playerEntity);
@@ -249,6 +248,9 @@ RaycastResult Physics::ShootRay(glm::vec3 origin, glm::vec3 direction, std::vect
 
             currentOrigin = glm::ceil(ray.position);
 
+            if (glm::floor(ray.position).y <= 0.0f) {
+                continue;
+            }
             BlockData& curBlock = Chunk::getBlockByPos(chunks, glm::floor(ray.position));
 
             if (curBlock.isSolid){
