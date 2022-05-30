@@ -3,7 +3,7 @@
 
 Precompiled executable for Minecraft kurciqs edition: https://kurciqs1.itch.io/mcke
 
-Then double-click on `cmake-build-debug/Minecraft.exe` it to start the game.
+Double-click on `cmake-build-debug/Minecraft.exe` to start the game.
 
 If you don't have Windows 64-bit, you'll have to build the game (see below)
 
